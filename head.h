@@ -21,5 +21,7 @@ extern DATATYPE Get_top_Data(LinkStack *s);
 extern int Push_LinkStack(LinkStack *s,DATATYPE data);
 extern DATATYPE Pop_LinkStack(LinkStack *s);
 extern Get_Level(char operator);
-extern int compute(LinkStack *opd_s,LinkStack *opt_s);
+extern int Compute(LinkStack *opd_s,LinkStack *opt_s);
+extern int Scan_char_Cal(char *p);
+
 #endif

@@ -48,7 +48,7 @@ int Push_LinkStack(LinkStack *s,DATATYPE data)
     s->n++;
 
     p->data = data;
-
+    
     return 0;
 }
 
@@ -127,60 +127,51 @@ int Compute(LinkStack *opd_s,LinkStack *opt_s)
 
 int Scan_char_Cal(char *p)
 {
-
-    int tmp;
+    
+    int data;
     int opt1,opt2;
     LinkStack *operand_stack = Create_empty_Stack(); 
     LinkStack *operator_stack = Create_empty_Stack();
     while (*p != '\0')
     {
-        tmp = 0;
-        while (*p >= '0' && *p <= '9')
+        data = 0;
+        if (*p >= '0' && *p <= '9')
         {
-            tmp = tmp*10 + (*p-'0');
-            p++;
+            data = data*10 + (*p-'0');
+            Push_LinkStack(operand_stack,data);
         }
-        Push_LinkStack(operand_stack,tmp);
-        /*printf("%d\n",Get_top_Data(operand_stack));*/
-        while (*p == ' ')
+        else
         {
-            p++;
-        }
-        switch (*p)
-        {
-        case '+':
-        case '-':
-        case '*':
-        case '/':
-            if (!Is_empty_Stack(operator_stack))
+            switch (*p)
             {
-                opt1 = Get_Level(*p);
-                opt2 = Get_Level(Get_top_Data(operator_stack)); 
-                if (opt1 > opt2)
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+                if (!Is_empty_Stack(operator_stack))
                 {
-                    Push_LinkStack(operator_stack,*p);
+                    opt1 = Get_Level(*p);
+                    opt2 = Get_Level(Get_top_Data(operator_stack)); 
+                    if (opt1 > opt2)
+                    {
+                        Push_LinkStack(operator_stack,*p);
+                    }
+                    else
+                    {
+                        Compute(operand_stack,operator_stack);
+                        Push_LinkStack(operator_stack,*p);
+                    }
                 }
                 else
                 {
-                    Compute(operand_stack,operator_stack);
                     Push_LinkStack(operator_stack,*p);
                 }
+                break;
+            default:
+                printf("Error char %c\n",*p);
             }
-            else
-            {
-                Push_LinkStack(operator_stack,*p);
-            }
-            p++;
-
-            break;
-        default:
-            printf("Error char %c\n",*p);
         }
-        /*printf("%c\n",Get_top_Data(operator_stack));*/
-        while (*p == ' ')
-        {
-            p++;
-        }
+        p++;
     }
     while (operator_stack->n != 0)
     {
